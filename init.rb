@@ -1,8 +1,8 @@
 Redmine::Plugin.register :redmine_ckyg do
   name 'Redmine Ckyg plugin'
-  author 'Author name'
-  description 'This is a plugin for Redmine'
+  author 'Roman Shipiev'
+  description 'This Redmine plugin import information about workplace time'
   version '0.0.1'
-  url 'http://example.com/path/to/plugin'
-  author_url 'http://example.com/about'
+  url 'https://github.com/rubynovich/redmine_ckyg.git'
+  author_url 'http://roman.shipiev.me'
 end
