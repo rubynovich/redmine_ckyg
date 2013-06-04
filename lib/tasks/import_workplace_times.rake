@@ -61,17 +61,15 @@ END_DESC
                 row[/^.\d{2}\.\d{2}.\d{4}/]
               end.each do |row|
                 begin
-                  array = row.split(";").map{ |str| str.gsub("\"",'') }.map{|str| str == "--" ? "00:00" : str.rstrip }
+                  array = row.split(";").map{ |str| str.gsub("\"",'') }.map{|str| str == "--" ? "00:00" : str.rstrip }.select(&:present?)
                   lastname, firstname, middlename = array[1].split(" ")
-                  shift = 0
-                  shift += 2 if array[3].blank?
                   p WorkplaceTime.create(
                     :user_id => User.where(:lastname => lastname).where("firstname LIKE ?", "%#{firstname}%").first.try(:id),
                     :workday => Date.parse(array[0]),
-                    :start_time => Time.parse(array[shift+2]),
-                    :end_time => Time.parse(array[shift+3]),
-                    :duration => Time.parse(array[shift+4]),
-                    :delay => Time.parse(array[shift+5])
+                    :start_time => Time.parse(array[2]),
+                    :end_time => Time.parse(array[3]),
+                    :duration => Time.parse(array[4]),
+                    :delay => Time.parse(array[5])
                   )
                 rescue
                   p array
