@@ -55,7 +55,6 @@ END_DESC
                                   :enable_ssl => true
         end
         while (mail = Mail.first)&& mail.present? do
-          mail = Mail.read('/home/redmine/inbox/1')
           mail.attachments.each do |file|
             if file.filename[/\.csv$/]
               file.decoded.force_encoding("Windows-1251").encode("UTF-8").split("\r\n").select do |row|
