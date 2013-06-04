@@ -60,18 +60,22 @@ END_DESC
               file.decoded.force_encoding("Windows-1251").encode("UTF-8").split("\r\n").select do |row|
                 row[/^.\d{2}\.\d{2}.\d{4}/]
               end.each do |row|
-                array = row.split(";").map{ |str| str.gsub("\"",'') }.map{|str| str == "--" ? "00:00" : str.rstrip }
-                lastname, firstname, middlename = array[1].split(" ")
-                shift = 0
-                shift += 2 if array[3].blank?
-                p WorkplaceTime.create(
-                  :user_id => User.where(:lastname => lastname).where("firstname LIKE ?", "%#{firstname}%").first.try(:id),
-                  :workday => Date.parse(array[0]),
-                  :start_time => Time.parse(array[shift+2]),
-                  :end_time => Time.parse(array[shift+3]),
-                  :duration => Time.parse(array[shift+4]),
-                  :delay => Time.parse(array[shift+5])
-                )
+                begin
+                  array = row.split(";").map{ |str| str.gsub("\"",'') }.map{|str| str == "--" ? "00:00" : str.rstrip }
+                  lastname, firstname, middlename = array[1].split(" ")
+                  shift = 0
+                  shift += 2 if array[3].blank?
+                  p WorkplaceTime.create(
+                    :user_id => User.where(:lastname => lastname).where("firstname LIKE ?", "%#{firstname}%").first.try(:id),
+                    :workday => Date.parse(array[0]),
+                    :start_time => Time.parse(array[shift+2]),
+                    :end_time => Time.parse(array[shift+3]),
+                    :duration => Time.parse(array[shift+4]),
+                    :delay => Time.parse(array[shift+5])
+                  )
+                rescue
+                  p array
+                end
               end
             end
           end if mail.attachments.present?
