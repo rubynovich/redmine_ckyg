@@ -20,7 +20,7 @@ END_DESC
               lastname, firstname, middlename = array[1].split(" ")
 
               WorkplaceTime.create(
-                :user_id => User.where(:lastname => lastname).where("firstname LIKE ?", "%#{firstname}%").first.try(:id),
+                :user_id => User.active.where(:lastname => lastname).where("firstname LIKE ?", "%#{firstname}%").first.try(:id),
                 :workday => Date.parse(array[0]),
                 :start_time => Time.parse(array[3]),
                 :end_time => Time.parse(array[4]),
@@ -64,7 +64,7 @@ END_DESC
                   array = row.split(";").map{ |str| str.gsub("\"",'') }.map{|str| str == "--" ? "00:00" : str.rstrip }.select(&:present?)
                   lastname, firstname, middlename = array[1].split(" ")
                   p WorkplaceTime.create(
-                    :user_id => User.where(:lastname => lastname).where("firstname LIKE ?", "%#{firstname}%").first.try(:id),
+                    :user_id => User.active.where(:lastname => lastname).where("firstname LIKE ?", "%#{firstname}%").first.try(:id),
                     :workday => Date.parse(array[0]),
                     :start_time => Time.parse(array[2]),
                     :end_time => Time.parse(array[3]),
