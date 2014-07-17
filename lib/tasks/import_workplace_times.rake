@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 namespace :redmine do
   namespace :workplace_times do
 desc <<-END_DESC
@@ -63,8 +65,11 @@ END_DESC
                 begin
                   array = row.split(";").map{ |str| str.gsub("\"",'') }.map{|str| str == "--" ? "00:00" : str.rstrip }.select(&:present?)
                   lastname, firstname, middlename = array[1].split(" ")
+
+                  user = User.active.where("firstname LIKE ?", "%#{firstname}%").select{|u| u.lastname.gsub('ё', 'е') == lastname.gsub('ё', 'е')}.first
+
                   p WorkplaceTime.create(
-                    :user_id => User.active.where(:lastname => lastname).where("firstname LIKE ?", "%#{firstname}%").first.try(:id),
+                    :user_id => user.try(:id),
                     :workday => Date.parse(array[0]),
                     :start_time => Time.parse(array[2]),
                     :end_time => Time.parse(array[3]),
