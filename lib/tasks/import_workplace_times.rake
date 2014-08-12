@@ -68,9 +68,17 @@ END_DESC
 
                   user = User.active.where("firstname LIKE ?", "%#{firstname}%").select{|u|
                     u.lastname.gsub('ё', 'е') == lastname.gsub('ё', 'е')
-                  }.select{|u|
-                    u.middlename == middlename
-                  }.first
+                  }
+
+                  if user.size > 1
+                    if middlename
+                      user = user.select{|u| u.middlename == middlename }.first
+                    else
+                      user = nil
+                    end
+                  else
+                    user = user.first
+                  end
 
                   p WorkplaceTime.create(
                     :user_id => user.try(:id),
