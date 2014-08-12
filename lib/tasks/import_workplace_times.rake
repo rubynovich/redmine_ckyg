@@ -66,7 +66,11 @@ END_DESC
                   array = row.split(";").map{ |str| str.gsub("\"",'') }.map{|str| str == "--" ? "00:00" : str.rstrip }.select(&:present?)
                   lastname, firstname, middlename = array[1].split(" ")
 
-                  user = User.active.where("firstname LIKE ?", "%#{firstname}%").select{|u| u.lastname.gsub('ё', 'е') == lastname.gsub('ё', 'е')}.first
+                  user = User.active.where("firstname LIKE ?", "%#{firstname}%").select{|u|
+                    u.lastname.gsub('ё', 'е') == lastname.gsub('ё', 'е')
+                  }.select{|u|
+                    u.middlename == middlename
+                  }.first
 
                   p WorkplaceTime.create(
                     :user_id => user.try(:id),
